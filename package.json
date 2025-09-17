@@ -1,0 +1,13 @@
+{
+  "name": "generator-orar-avansat",
+  "version": "1.0.0",
+  "description": "Generator de orar avansat pentru clasele primare I-IV cu 16 teme frumoase",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve -s .",
+    "build": "echo 'Static site, no build needed'"
+  },
+  "keywords": ["orar", "generator", "school", "timetable", "romanian"],
+  "author": "Tricaco001",
+  "license": "MIT"
+}

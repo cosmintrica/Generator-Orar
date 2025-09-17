@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Generator Orar Avansat – A4 Landscape (Clasele I–IV)</title>
+  <!-- CSS extern pentru designuri superbe -->
+  <link rel="stylesheet" href="styles.css?v=2.1">
+  <!-- Cache busting pentru utilizatori -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <!-- html2canvas for PNG export -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <!-- jsPDF for PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body data-theme="playful">
+  <div class="app">
+    <!-- Panel de Control Orizontal -->
+    <div class="control-panel">
+      <div class="panel-header">
+        <h1 class="panel-title">🎨 Generator Orar Avansat</h1>
+        <div class="panel-subtitle">Pentru clasele I–IV • 12 designuri superbe • Format A4 landscape perfect pentru printare • Cu suport complet pentru diacritice românești</div>
+      </div>
+
+      <!-- Informații de Bază - Grid Orizontal -->
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="school">🏫 Liceu/Școală</label>
+          <input id="school" type="text" value="Liceul Energetic, Craiova" placeholder="Ex: Liceul Energetic, Craiova"/>
+        </div>
+        <div class="form-group">
+          <label for="year">📅 An școlar</label>
+          <input id="year" type="text" value="2025–2026" placeholder="Ex: 2025-2026"/>
+        </div>
+        <div class="form-group">
+          <label for="grade">🎓 Clasa</label>
+          <input id="grade" type="text" value="Clasa a III-a" placeholder="Ex: Clasa a III-a"/>
+        </div>
+        <div class="form-group">
+          <label for="theme">🎨 Design (16 teme)</label>
+          <select id="theme">
+            <option value="playful">🌈 Jucăuș Pastel (recomandat I–IV)</option>
+            <option value="rainbow">🌈 Curcubeu Magic</option>
+            <option value="butterfly">🦋 Fluturi și Flori</option>
+            <option value="jungle">🌿 Aventură în Junglă</option>
+            <option value="ocean">🌊 Ocean Albastru</option>
+            <option value="space">🚀 Spațiul Cosmic</option>
+            <option value="candy">🍭 Dulciuri și Bomboane</option>
+            <option value="animals">🐻 Animăluțe Drăguțe</option>
+            <option value="chalk">📚 Tablă de Scris</option>
+            <option value="princess">👸 Prințese și Casteluri</option>
+            <option value="robots">🤖 Roboți și Tehnologie</option>
+            <option value="fairytale">✨ Povești de Basm</option>
+            <option value="paper">📜 Pergament Antic</option>
+            <option value="neon">⚡ Neon Electric</option>
+            <option value="wood">🌳 Lemn Natural</option>
+            <option value="marble">💎 Marmură Elegantă</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="director">👔 Director</label>
+          <input id="director" type="text" value="Prof. Gabriela Achim" placeholder="Ex: Prof. Gabriela Achim"/>
+        </div>
+        <div class="form-group">
+          <label for="teacher">👩‍🏫 Prof. înv. primar</label>
+          <input id="teacher" type="text" value="Cârstea Ionica" placeholder="Ex: Cârstea Ionica"/>
+        </div>
+        <div class="form-group">
+          <label for="timeFormat">🕐 Format Ore</label>
+          <select id="timeFormat">
+            <option value="hours">08:00-08:50, 09:00-09:50...</option>
+            <option value="numbers">1, 2, 3, 4, 5...</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Import din Excel/Word cu Detectare Automată - Collapsible -->
+      <div class="import-section collapsed" id="importSection">
+        <div class="import-header" onclick="toggleImportSection()">
+          <span>📋 Import Automat din Excel/Word</span>
+          <span class="import-toggle">🔽</span>
+        </div>
+        <div class="import-content">
+          <p style="color: var(--muted); margin-bottom: 12px; text-align: center;">
+            Copiază orarul din Excel sau Word și lipește aici. Detectarea este automată!
+          </p>
+          
+          <!-- Info despre orarul pre-încărcat -->
+          <div class="predefined-subjects">
+            <h4>✅ Orarul oficial pentru Clasa a III-a este deja încărcat automat!</h4>
+            <p style="font-size: 12px; color: var(--muted); margin: 8px 0;">
+              Orarul din documentul .docx se încarcă automat la deschiderea paginii. 
+              Poți modifica materiile direct în câmpurile de mai jos sau importa din Excel/Word.
+            </p>
+          </div>
+          
+          <div class="import-options">
+            <div>
+              <label>📊 Format Excel/Tabel</label>
+              <textarea id="excel-paste" class="import-textarea" placeholder="Luni	Marți	Miercuri	Joi	Vineri&#10;Matematică	Română	Științe	Sport	Arte&#10;Română	Matematică	Arte	Științe	Muzică"></textarea>
+              <button class="btn secondary" onclick="importFromExcel()">📥 Importă din Excel</button>
+            </div>
+            <div>
+              <label>📝 Format Word/Text</label>
+              <textarea id="word-paste" class="import-textarea" placeholder="Luni:&#10;Matematică&#10;Română&#10;Sport&#10;&#10;Marți:&#10;Științe&#10;Arte&#10;Muzică"></textarea>
+              <button class="btn secondary" onclick="importFromWord()">📄 Importă din Word</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Editor de Zile cu Imagini/Emoji -->
+      <div class="days-editor" id="daysEditor">
+        <!-- Se va genera dinamic -->
+      </div>
+
+      <!-- Template-uri Salvate -->
+      <div class="templates-section" id="templatesSection">
+        <h3 style="font-size: 14px; color: var(--accent); margin: 15px 0 10px 0;">📁 Template-uri Salvate</h3>
+        <div class="templates-list" id="templatesList">
+          <!-- Se va genera dinamic -->
+        </div>
+      </div>
+
+      <!-- Butoane de Control -->
+      <div class="controls">
+        <button class="btn" onclick="generateSchedule()">🎯 Generează Orarul</button>
+        <button class="btn secondary" onclick="window.print()">🖨️ Print / PDF</button>
+        <button class="btn secondary" onclick="exportToPNG()">📸 Descarcă PNG</button>
+        <button class="btn outline" onclick="saveTemplate()">💾 Salvează Template</button>
+        <button class="btn outline" onclick="clearAll()">🧹 Golește Tot</button>
+      </div>
+
+      <div id="successMessage"></div>
+    </div>
+
+    <!-- Popup Custom pentru Confirmare -->
+    <div id="confirmModal" class="modal-overlay" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modalTitle">Confirmare</h3>
+          <button class="modal-close" onclick="closeConfirmModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <p id="modalMessage">Sigur vrei să continui?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn outline" onclick="closeConfirmModal()">Anulează</button>
+          <button class="btn" id="confirmButton" onclick="confirmAction()">Confirmă</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Previzualizare Centrată -->
+    <div class="preview-section">
+      <section id="sheet" class="sheet" aria-label="Previzualizare orar A4">
+        <div class="ribbons">
+          <span class="ribbon r1"></span>
+          <span class="ribbon r2"></span>
+          <span class="ribbon r3"></span>
+        </div>
+        
+        <div class="sheet-inner">
+          <!-- Header conform .docx: școala stânga sus, directorul dreapta sus -->
+          <div class="header">
+            <div class="school-info" id="outSchool">LICEUL ENERGETIC, CRAIOVA</div>
+            <div class="director-info" id="outDirector">Director: Prof. Gabriela Achim</div>
+          </div>
+
+          <!-- Titlu centrat cu anul școlar -->
+          <div class="title-section">
+            <div class="main-title" id="outTitle">ORAR – CLASA A III-A</div>
+            <div class="year-subtitle" id="outYear">Anul școlar 2025–2026</div>
+          </div>
+
+          <!-- Tabelul cu orarul -->
+          <div class="schedule-grid" id="grid">
+            <!-- Se va genera dinamic -->
+          </div>
+
+          <!-- Semnături conform .docx: profesorul în dreapta jos -->
+          <div class="signatures">
+            <div class="signature">
+              <div class="sig-role">Prof. înv. primar</div>
+              <div class="sig-name" id="outTeacher">Cârstea Ionica</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // Date și configurare
+    const dayNames = ["Luni", "Marți", "Miercuri", "Joi", "Vineri"];
+    // Lista completă de emoji pentru materii cu auto-detectare inteligentă
+    const subjectEmojiList = [
+      // Matematică și științe exacte
+      { keywords: ['matematică', 'mate'], emoji: '🔢', category: 'Matematică' },
+      { keywords: ['matematică distractivă', 'mate distractivă'], emoji: '🎲', category: 'Matematică' },
+      { keywords: ['geometrie'], emoji: '📐', category: 'Matematică' },
+      { keywords: ['algebră'], emoji: '🧮', category: 'Matematică' },
+      
+      // Limba română și limbi străine - Doar cele 3 principale
+      { keywords: ['română', 'limba română', 'limba și literatura română', 'llr'], emoji: '📚', category: 'Limbi' },
+      { keywords: ['engleză', 'limba engleză', 'english'], emoji: '🇬🇧', category: 'Limbi' },
+      { keywords: ['franceză', 'limba franceză', 'français'], emoji: '🇫🇷', category: 'Limbi' },
+      
+      // Științe naturale
+      { keywords: ['științe', 'științe ale naturii', 'științe naturale'], emoji: '🔬', category: 'Științe' },
+      { keywords: ['fizică'], emoji: '⚡', category: 'Științe' },
+      { keywords: ['chimie'], emoji: '🧪', category: 'Științe' },
+      { keywords: ['biologie'], emoji: '🌱', category: 'Științe' },
+      { keywords: ['geografie'], emoji: '🌍', category: 'Științe' },
+      
+      // Sport și mișcare
+      { keywords: ['sport', 'educație fizică', 'ed fizică'], emoji: '⛹️', category: 'Sport' },
+      { keywords: ['joc și mișcare', 'jocuri', 'mișcare'], emoji: '🏃‍♂️', category: 'Sport' },
+      { keywords: ['gimnastică'], emoji: '🤸‍♀️', category: 'Sport' },
+      { keywords: ['dans'], emoji: '💃', category: 'Sport' },
+      
+      // Arte și creativitate
+      { keywords: ['arte', 'arte vizuale', 'arte vizuale și abilități practice'], emoji: '🎨', category: 'Arte' },
+      { keywords: ['muzică', 'educație muzicală'], emoji: '🎵', category: 'Arte' },
+      { keywords: ['muzică și mișcare'], emoji: '🎵🏃‍♂️', category: 'Arte' },
+      { keywords: ['desen'], emoji: '✏️', category: 'Arte' },
+      { keywords: ['pictură'], emoji: '🖌️', category: 'Arte' },
+      { keywords: ['teatru'], emoji: '🎭', category: 'Arte' },
+      
+      // Științe sociale și umane
+      { keywords: ['istorie'], emoji: '🏛️', category: 'Umane' },
+      { keywords: ['educație civică', 'civică'], emoji: '🏛️', category: 'Umane' },
+      { keywords: ['religie', 'educație religioasă'], emoji: '⛪', category: 'Umane' },
+      { keywords: ['filozofie'], emoji: '🤔', category: 'Umane' },
+      
+      // Tehnologie și practică
+      { keywords: ['informatică', 'tic'], emoji: '💻', category: 'Tehnologie' },
+      { keywords: ['educație tehnologică', 'tehnologie'], emoji: '🔧', category: 'Tehnologie' },
+      { keywords: ['robotică'], emoji: '🤖', category: 'Tehnologie' },
+      
+      // Activități speciale
+      { keywords: ['consiliere', 'consiliere și orientare'], emoji: '💭', category: 'Consiliere' },
+      { keywords: ['diriginție', 'dirigentie', 'ora dirigintelui'], emoji: '👨‍🏫', category: 'Consiliere' },
+      { keywords: ['activități remediale', 'remediale'], emoji: '📖', category: 'Remediale' },
+      { keywords: ['activități remediale llr', 'remediale română'], emoji: '📝', category: 'Remediale' },
+      { keywords: ['activități remediale matematică', 'remediale matematică'], emoji: '🧮', category: 'Remediale' },
+      
+      // Materii opționale
+      { keywords: ['psihologie'], emoji: '🧠', category: 'Opționale' },
+      { keywords: ['ecologie'], emoji: '🌿', category: 'Opționale' },
+      { keywords: ['astronomie'], emoji: '🌟', category: 'Opționale' },
+      { keywords: ['educație economică'], emoji: '💰', category: 'Opționale' },
+      { keywords: ['educație pentru sănătate'], emoji: '🏥', category: 'Opționale' }
+    ];
+
+    // Funcție îmbunătățită pentru auto-detectarea emoji-ului
+    const subjectIcons = {};
+    subjectEmojiList.forEach(item => {
+      item.keywords.forEach(keyword => {
+        subjectIcons[keyword] = item.emoji;
+      });
+    });
+
+    // Orar predefinit pentru clasa a III-a (din documentul .docx)
+    const predefinedSchedule = {
+      "Luni": [
+        "Limba și literatura română",
+        "Limba engleză", 
+        "Limba și literatura română",
+        "Educație civică",
+        "Activități remediale LLR"
+      ],
+      "Marți": [
+        "Matematică",
+        "Matematică",
+        "Științe ale naturii", 
+        "Limba și literatura română",
+        "Arte vizuale și abilități practice"
+      ],
+      "Miercuri": [
+        "Educație fizică",
+        "Matematică",
+        "Matematică",
+        "Religie",
+        "Limba engleză"
+      ],
+      "Joi": [
+        "Limba și literatura română",
+        "Limba și literatura română", 
+        "Joc și mișcare",
+        "Matematică distractivă",
+        "Activități remediale matematică"
+      ],
+      "Vineri": [
+        "Educație fizică",
+        "Limba engleză",
+        "Muzică și mișcare", 
+        "Arte vizuale și abilități practice"
+      ]
+    };
+
+    // Lista tuturor materiilor pentru referință
+    const allSubjects = [
+      "Limba și literatura română",
+      "Matematică", 
+      "Științe ale naturii",
+      "Educație fizică",
+      "Arte vizuale și abilități practice",
+      "Limba engleză",
+      "Educație civică",
+      "Religie",
+      "Joc și mișcare",
+      "Matematică distractivă",
+      "Muzică și mișcare",
+      "Activități remediale LLR",
+      "Activități remediale matematică"
+    ];
+
+    // Starea aplicației - va fi inițializată cu orarul predefinit
+    let state = {
+      days: dayNames.map(name => ({
+        name,
+        count: 0,
+        subjects: []
+      }))
+    };
+
+    // Construiește editorul de zile
+    function buildDaysEditor() {
+      const editor = document.getElementById('daysEditor');
+      editor.innerHTML = '';
+
+      state.days.forEach((day, dayIndex) => {
+        const dayCard = document.createElement('div');
+        dayCard.className = 'day-card slide-in';
+        
+        dayCard.innerHTML = `
+          <div class="day-title">
+            <span>${day.name}</span>
+            <div class="hour-controls">
+              <label for="count-${dayIndex}">Nr. ore</label>
+              <input id="count-${dayIndex}" type="number" min="0" max="10" step="1" 
+                     value="${day.count}" class="hour-input" 
+                     onchange="updateDayHours(${dayIndex}, this.value)" />
+            </div>
+          </div>
+          <div class="subjects-list" id="subjects-${dayIndex}"></div>
+        `;
+        
+        editor.appendChild(dayCard);
+        renderSubjectInputs(dayIndex);
+      });
+    }
+
+    // Redă inputurile pentru materii
+    function renderSubjectInputs(dayIndex) {
+      const container = document.getElementById(`subjects-${dayIndex}`);
+      const day = state.days[dayIndex];
+      container.innerHTML = '';
+
+      for (let i = 0; i < day.count; i++) {
+        const subject = day.subjects[i] || { text: "", icon: "", image: "" };
+        
+        const inputGroup = document.createElement('div');
+        inputGroup.className = 'subject-input-group';
+        
+        inputGroup.innerHTML = `
+          <input type="text" class="subject-input" 
+                 value="${subject.text}" 
+                 placeholder="Ora ${i + 1} - Ex: Matematică, Limba română"
+                 onchange="updateSubjectText(${dayIndex}, ${i}, this.value)" />
+          <div class="emoji-selector-container">
+            <select class="emoji-select" onchange="updateSubjectIcon(${dayIndex}, ${i}, this.value)">
+              <option value="">📖 Alege emoji</option>
+              ${getEmojiOptions(subject.icon)}
+            </select>
+          </div>
+          <input type="text" class="image-input" 
+                 value="${subject.image}" 
+                 placeholder="URL imagine"
+                 title="URL către imagine (opțional)"
+                 onchange="updateSubjectImage(${dayIndex}, ${i}, this.value)" />
+        `;
+        
+        container.appendChild(inputGroup);
+      }
+    }
+
+    // Actualizează numărul de ore pentru o zi
+    function updateDayHours(dayIndex, hours) {
+      const numHours = Math.max(0, Math.min(10, parseInt(hours) || 0));
+      const day = state.days[dayIndex];
+      day.count = numHours;
+      
+      // Ajustează array-ul de materii
+      while (day.subjects.length < numHours) {
+        day.subjects.push({ text: "", icon: "", image: "" });
+      }
+      if (day.subjects.length > numHours) {
+        day.subjects = day.subjects.slice(0, numHours);
+      }
+      
+      renderSubjectInputs(dayIndex);
+      
+      // Auto-salvare
+      autoSaveData();
+    }
+
+    // Actualizează textul unei materii
+    function updateSubjectText(dayIndex, subjectIndex, text) {
+      if (!state.days[dayIndex].subjects[subjectIndex]) {
+        state.days[dayIndex].subjects[subjectIndex] = { text: "", icon: "", image: "" };
+      }
+      state.days[dayIndex].subjects[subjectIndex].text = text;
+      
+      // Auto-detectare icon pe baza textului
+      const newIcon = getSubjectIcon(text);
+      if (newIcon && newIcon !== '📖') {
+        state.days[dayIndex].subjects[subjectIndex].icon = newIcon;
+        renderSubjectInputs(dayIndex);
+      }
+      
+      // Auto-salvare
+      autoSaveData();
+    }
+
+    // Actualizează iconul unei materii
+    function updateSubjectIcon(dayIndex, subjectIndex, icon) {
+      if (!state.days[dayIndex].subjects[subjectIndex]) {
+        state.days[dayIndex].subjects[subjectIndex] = { text: "", icon: "", image: "" };
+      }
+      state.days[dayIndex].subjects[subjectIndex].icon = icon;
+      
+      // Auto-salvare
+      autoSaveData();
+    }
+
+    // Actualizează imaginea unei materii
+    function updateSubjectImage(dayIndex, subjectIndex, image) {
+      if (!state.days[dayIndex].subjects[subjectIndex]) {
+        state.days[dayIndex].subjects[subjectIndex] = { text: "", icon: "", image: "" };
+      }
+      state.days[dayIndex].subjects[subjectIndex].image = image;
+      
+      // Auto-salvare
+      autoSaveData();
+    }
+
+    // Auto-salvare în timp real (DOAR pentru restaurare, NU pentru template-uri)
+    function autoSaveData() {
+      try {
+        const currentData = {
+          school: document.getElementById('school').value,
+          year: document.getElementById('year').value,
+          grade: document.getElementById('grade').value,
+          theme: document.getElementById('theme').value,
+          director: document.getElementById('director').value,
+          teacher: document.getElementById('teacher').value,
+          timeFormat: document.getElementById('timeFormat').value,
+          days: state.days,
+          timestamp: new Date().toISOString(),
+          version: '2.1'
+        };
+        
+        // Salvează DOAR pentru restaurare la refresh, NU în lista de template-uri
+        localStorage.setItem('orarCurrentWork', JSON.stringify(currentData));
+        localStorage.setItem('orarAutoSave', Date.now().toString());
+      } catch (error) {
+        console.error('Auto-save error:', error);
+      }
+    }
+
+    // Formatează numele materiei cu majuscule corecte și păstrarea abrevierilor
+    function formatSubjectName(text) {
+      if (!text) return '';
+      const exceptions = ['și', 'sau', 'de', 'la', 'în', 'pe', 'cu', 'din', 'pentru', 'către'];
+      const abbreviations = ['LLR', 'TIC', 'IT', 'PE', 'EF']; // Abrevieri care rămân cu majuscule
+      
+      return text.trim()
+        .replace(/\s+/g, ' ')
+        .split(' ')
+        .map((word, index) => {
+          const upper = word.toUpperCase();
+          const lower = word.toLowerCase();
+          
+          // Verifică dacă e o abreviere cunoscută
+          if (abbreviations.includes(upper)) {
+            return upper;
+          }
+          
+          // Verifică dacă e o excepție (cuvânt mic)
+          if (index > 0 && exceptions.includes(lower)) {
+            return lower;
+          }
+          
+          // Formatare normală cu prima literă mare
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        })
+        .join(' ');
+    }
+
+    // Import din Excel (format tabel)
+    function importFromExcel() {
+      const excelData = document.getElementById('excel-paste').value.trim();
+      if (!excelData) {
+        showMessage('❌ Nu există date pentru import din Excel!', 'error');
+        return;
+      }
+
+      try {
+        const lines = excelData.split('\n').map(line => line.trim()).filter(line => line);
+        
+        // Resetează starea
+        state.days.forEach(day => { day.subjects = []; day.count = 0; });
+
+        // Prima linie poate conține zilele sau direct materiile
+        let startLine = 0;
+        const firstLine = lines[0].toLowerCase();
+        if (firstLine.includes('luni') || firstLine.includes('marti') || firstLine.includes('miercuri')) {
+          startLine = 1; // Sare peste header
+        }
+
+        // Procesează fiecare linie ca o oră
+        for (let i = startLine; i < lines.length; i++) {
+          const subjects = lines[i].split(/\t|;|,/).map(s => s.trim()).filter(s => s);
+          
+          subjects.forEach((subject, dayIndex) => {
+            if (dayIndex < state.days.length && subject) {
+              const icon = getSubjectIcon(subject);
+              state.days[dayIndex].subjects.push({
+                text: subject,
+                icon: icon,
+                image: ""
+              });
+              state.days[dayIndex].count = state.days[dayIndex].subjects.length;
+            }
+          });
+        }
+
+        buildDaysEditor();
+        generateSchedule();
+        showMessage('📊 Date importate cu succes din Excel!', 'success');
+        
+      } catch (error) {
+        showMessage('❌ Eroare la importul din Excel. Verifică formatul!', 'error');
+        console.error('Excel import error:', error);
+      }
+    }
+
+    // Import din Word (format text)
+    function importFromWord() {
+      const wordData = document.getElementById('word-paste').value.trim();
+      if (!wordData) {
+        showMessage('❌ Nu există date pentru import din Word!', 'error');
+        return;
+      }
+
+      try {
+        const lines = wordData.split('\n').map(line => line.trim()).filter(line => line);
+        let currentDayIndex = -1;
+        
+        // Resetează starea
+        state.days.forEach(day => { day.subjects = []; day.count = 0; });
+
+        for (const line of lines) {
+          // Verifică dacă linia este o zi
+          const dayIndex = dayNames.findIndex(day => 
+            line.toLowerCase().includes(day.toLowerCase()) || 
+            day.toLowerCase().includes(line.toLowerCase().replace(':', ''))
+          );
+          
+          if (dayIndex !== -1) {
+            currentDayIndex = dayIndex;
+          } else if (currentDayIndex !== -1 && line) {
+            // Este o materie
+            const icon = getSubjectIcon(line);
+            state.days[currentDayIndex].subjects.push({
+              text: line,
+              icon: icon,
+              image: ""
+            });
+            state.days[currentDayIndex].count = state.days[currentDayIndex].subjects.length;
+          }
+        }
+
+        buildDaysEditor();
+        generateSchedule();
+        showMessage('📄 Date importate cu succes din Word!', 'success');
+        
+      } catch (error) {
+        showMessage('❌ Eroare la importul din Word. Verifică formatul!', 'error');
+        console.error('Word import error:', error);
+      }
+    }
+
+    // Obține iconul pentru o materie cu auto-detectare îmbunătățită
+    function getSubjectIcon(subject) {
+      const lowerSubject = subject.toLowerCase().trim();
+      
+      // Caută în lista de emoji
+      for (const item of subjectEmojiList) {
+        for (const keyword of item.keywords) {
+          if (lowerSubject.includes(keyword.toLowerCase())) {
+            return item.emoji;
+          }
+        }
+      }
+      return '📖'; // Icon implicit
+    }
+
+    // Generează opțiunile pentru selectorul de emoji
+    function getEmojiOptions(selectedEmoji = '') {
+      const categories = {};
+      
+      // Grupează emoji-urile pe categorii
+      subjectEmojiList.forEach(item => {
+        if (!categories[item.category]) {
+          categories[item.category] = [];
+        }
+        if (!categories[item.category].find(e => e.emoji === item.emoji)) {
+          categories[item.category].push(item);
+        }
+      });
+
+      let options = '';
+      Object.keys(categories).forEach(category => {
+        options += `<optgroup label="${category}">`;
+        categories[category].forEach(item => {
+          const selected = item.emoji === selectedEmoji ? 'selected' : '';
+          options += `<option value="${item.emoji}" ${selected} title="${item.keywords[0]}">${item.emoji}</option>`;
+        });
+        options += '</optgroup>';
+      });
+
+      return options;
+    }
+
+    // Toggle secțiunea de import
+    function toggleImportSection() {
+      const section = document.getElementById('importSection');
+      section.classList.toggle('collapsed');
+      
+      const toggle = section.querySelector('.import-toggle');
+      if (section.classList.contains('collapsed')) {
+        toggle.textContent = '🔽';
+      } else {
+        toggle.textContent = '🔼';
+      }
+    }
+
+
+    // Funcție pentru încărcarea orarului oficial (fără confirmare)
+    function loadOfficialSchedule() {
+      // Încarcă orarul exact pentru fiecare zi
+      state.days.forEach((day, dayIndex) => {
+        const dayName = day.name;
+        const daySubjects = predefinedSchedule[dayName] || [];
+        
+        day.subjects = [];
+        day.count = daySubjects.length;
+        
+        daySubjects.forEach(subject => {
+          const icon = getSubjectIcon(subject);
+          day.subjects.push({
+            text: subject,
+            icon: icon,
+            image: ""
+          });
+        });
+      });
+
+      buildDaysEditor();
+      generateSchedule();
+    }
+
+    // Orele pentru clasele primare (50 min oră + 10 min pauză)
+    const timeSlots = [
+      '08:00-08:50',
+      '09:00-09:50', 
+      '10:00-10:50',
+      '11:00-11:50',
+      '12:00-12:50'
+    ];
+
+    // Generează orarul
+    function generateSchedule() {
+      document.body.classList.add('loading');
+      
+      setTimeout(() => {
+        // Actualizează header-ul conform .docx
+        const school = document.getElementById('school').value.trim();
+        document.getElementById('outSchool').textContent = school.toUpperCase();
+        
+        const director = document.getElementById('director').value.trim();
+        document.getElementById('outDirector').innerHTML = `Director,<br>${director}`;
+        
+        const year = document.getElementById('year').value.trim();
+        document.getElementById('outYear').textContent = `Anul școlar ${year}`;
+        
+        const grade = document.getElementById('grade').value.trim();
+        document.getElementById('outTitle').textContent = `ORAR – ${grade.toUpperCase()}`;
+        
+        const teacher = document.getElementById('teacher').value.trim();
+        document.getElementById('outTeacher').textContent = teacher;
+
+        // Generează grid-ul
+        const maxRows = Math.max(...state.days.map(d => d.count), 1);
+        const grid = document.getElementById('grid');
+        grid.innerHTML = '';
+
+        // Rândul header
+        const headerCells = ['Ora', ...dayNames];
+        headerCells.forEach(header => {
+          const cell = document.createElement('div');
+          cell.className = 'grid-cell header';
+          cell.textContent = header;
+          grid.appendChild(cell);
+        });
+
+        // Rândurile cu materii
+        for (let row = 0; row < maxRows; row++) {
+          // Celula cu ora - verifică formatul ales
+          const periodCell = document.createElement('div');
+          periodCell.className = 'grid-cell period';
+          const timeFormat = document.getElementById('timeFormat').value;
+          
+          if (timeFormat === 'hours') {
+            periodCell.textContent = timeSlots[row] || `${row + 1}`;
+          } else {
+            periodCell.textContent = `${row + 1}`;
+          }
+          grid.appendChild(periodCell);
+          
+          // Celulele pentru fiecare zi
+          state.days.forEach(day => {
+            const cell = document.createElement('div');
+            cell.className = 'grid-cell';
+            
+            const subject = day.subjects[row];
+            if (subject && subject.text.trim()) {
+              const content = document.createElement('div');
+              content.className = 'subject-content';
+              
+              // 1. Adaugă imaginea deasupra (dacă există) - prioritate față de emoji
+              if (subject.image) {
+                const img = document.createElement('img');
+                img.src = subject.image;
+                img.className = 'subject-image';
+                img.alt = subject.text;
+                content.appendChild(img);
+              }
+              // 1b. Adaugă emoji-ul deasupra DOAR dacă nu există imagine
+              else if (subject.icon) {
+                const icon = document.createElement('div');
+                icon.className = 'subject-icon';
+                icon.textContent = subject.icon;
+                content.appendChild(icon);
+              }
+              
+              // 2. Adaugă textul sub emoji/imagine
+              const text = document.createElement('div');
+              text.className = 'subject-text';
+              text.textContent = formatSubjectName(subject.text);
+              content.appendChild(text);
+              
+              cell.appendChild(content);
+            }
+            
+            grid.appendChild(cell);
+          });
+        }
+
+        document.body.classList.remove('loading');
+        showMessage('🎯 Orarul a fost generat cu succes!', 'success');
+      }, 300);
+    }
+
+    // Export PNG de înaltă calitate cu gradient și texte mari
+    async function exportToPNG() {
+      showMessage('📸 Generez imaginea de înaltă calitate...', 'success');
+      
+      try {
+        const sheetElement = document.getElementById('sheet');
+        
+        // Aplică stiluri temporare pentru PNG export (texte mari)
+        const tempStyle = document.createElement('style');
+        tempStyle.id = 'png-export-style';
+        tempStyle.textContent = `
+          #sheet .main-title { font-size: 34pt !important; }
+          #sheet .year-subtitle { font-size: 18pt !important; }
+          #sheet .grid-cell { font-size: 18pt !important; min-height: 16mm !important; }
+          #sheet .grid-cell.header { font-size: 20pt !important; }
+          #sheet .grid-cell.period { font-size: 12pt !important; }
+          #sheet .subject-text { font-size: 16pt !important; }
+          #sheet .subject-icon { font-size: 32px !important; }
+          #sheet .subject-image { width: 44px !important; height: 44px !important; }
+          #sheet .sig-name { font-size: 14pt !important; }
+          #sheet .sig-role { font-size: 12pt !important; }
+        `;
+        document.head.appendChild(tempStyle);
+        
+        // Așteaptă aplicarea stilurilor
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
+        const canvas = await html2canvas(sheetElement, {
+          scale: 3,
+          backgroundColor: null,
+          useCORS: true,
+          allowTaint: true,
+          width: sheetElement.offsetWidth,
+          height: sheetElement.offsetHeight,
+          logging: false,
+          removeContainer: false,
+          foreignObjectRendering: true,
+          imageTimeout: 20000,
+          onclone: function(clonedDoc) {
+            // Asigură-te că toate stilurile sunt aplicate în clonă
+            const clonedStyle = clonedDoc.getElementById('png-export-style');
+            if (clonedStyle) {
+              clonedStyle.innerHTML = tempStyle.textContent;
+            }
+          }
+        });
+        
+        // Elimină stilurile temporare
+        document.head.removeChild(tempStyle);
+        
+        // Verifică dacă canvas-ul a fost generat corect
+        if (!canvas || canvas.width === 0 || canvas.height === 0) {
+          throw new Error('Canvas-ul nu a fost generat corect');
+        }
+        
+        // Creează și descarcă imaginea
+        const dataURL = canvas.toDataURL('image/png', 1.0);
+        
+        if (!dataURL || dataURL === 'data:,') {
+          throw new Error('Imaginea nu a fost generată corect');
+        }
+        
+        const link = document.createElement('a');
+        const grade = document.getElementById('grade').value.trim().replace(/\s+/g, '_');
+        const theme = document.getElementById('theme').options[document.getElementById('theme').selectedIndex].text.replace(/[🎨🌈🦋🌿🌊🚀🍭🐻📚👸🤖✨]/g, '').trim();
+        link.download = `Orar_${grade}_${theme}_${new Date().getTime()}.png`;
+        link.href = dataURL;
+        
+        // Forțează descărcarea
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showMessage('📸 Imaginea PNG a fost descărcată cu gradient și texte mari!', 'success');
+      } catch (error) {
+        showMessage('❌ Eroare la generarea PNG: ' + error.message, 'error');
+        console.error('PNG export error:', error);
+        
+        // Fallback - încearcă cu setări mai simple
+        try {
+          showMessage('🔄 Încerc cu setări alternative...', 'success');
+          const canvas = await html2canvas(document.getElementById('sheet'), {
+            scale: 1,
+            backgroundColor: 'white'
+          });
+          
+          const link = document.createElement('a');
+          link.download = `Orar_Fallback_${new Date().getTime()}.png`;
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+          
+          showMessage('📸 Imaginea PNG alternativă a fost descărcată!', 'success');
+        } catch (fallbackError) {
+          showMessage('❌ Nu s-a putut genera imaginea PNG. Încearcă să refreshezi pagina.', 'error');
+        }
+      }
+    }
+
+    // Sistem de management template-uri
+    function getSavedTemplates() {
+      try {
+        const saved = localStorage.getItem('orarTemplates');
+        return saved ? JSON.parse(saved) : [];
+      } catch (error) {
+        console.error('Error loading templates:', error);
+        return [];
+      }
+    }
+
+    function generateTemplateName(teacherName) {
+      const templates = getSavedTemplates();
+      const baseTeacher = teacherName.trim();
+      
+      if (!baseTeacher) {
+        return `Template ${templates.length + 1}`;
+      }
+      
+      // Numără template-urile existente pentru același profesor
+      const sameTeacherCount = templates.filter(t => 
+        t.teacher.toLowerCase().includes(baseTeacher.toLowerCase()) ||
+        baseTeacher.toLowerCase().includes(t.teacher.toLowerCase())
+      ).length;
+      
+      if (sameTeacherCount === 0) {
+        return baseTeacher;
+      } else {
+        return `${baseTeacher} ${sameTeacherCount + 1}`;
+      }
+    }
+
+    // Salvează template-ul cu sistem de management
+    function saveTemplate() {
+      try {
+        // Colectează toate datele din inputuri
+        const currentState = {
+          days: state.days.map(day => ({
+            name: day.name,
+            count: day.count,
+            subjects: day.subjects.map(subject => ({
+              text: subject.text || '',
+              icon: subject.icon || '',
+              image: subject.image || ''
+            }))
+          }))
+        };
+
+        const teacherName = document.getElementById('teacher').value.trim();
+        const templateName = generateTemplateName(teacherName);
+        
+        const templateData = {
+          id: Date.now().toString(),
+          name: templateName,
+          school: document.getElementById('school').value,
+          year: document.getElementById('year').value,
+          grade: document.getElementById('grade').value,
+          theme: document.getElementById('theme').value,
+          director: document.getElementById('director').value,
+          teacher: teacherName,
+          days: currentState.days,
+          timestamp: new Date().toISOString(),
+          version: '2.1'
+        };
+        
+        // Încarcă template-urile existente și adaugă noul
+        const templates = getSavedTemplates();
+        templates.push(templateData);
+        
+        // Păstrează doar ultimele 10 template-uri
+        if (templates.length > 10) {
+          templates.splice(0, templates.length - 10);
+        }
+        
+        localStorage.setItem('orarTemplates', JSON.stringify(templates));
+        localStorage.setItem('orarCurrentTemplate', JSON.stringify(templateData));
+        
+        showMessage(`💾 Template "${templateName}" salvat cu succes! Total: ${templates.length} template-uri.`, 'success');
+        
+        // Actualizează lista de template-uri
+        updateTemplatesList();
+        
+      } catch (error) {
+        showMessage('❌ Eroare la salvarea template-ului: ' + error.message, 'error');
+        console.error('Save error:', error);
+      }
+    }
+
+    // Actualizează lista de template-uri în interfață
+    function updateTemplatesList() {
+      const templates = getSavedTemplates();
+      const listContainer = document.getElementById('templatesList');
+      
+      if (templates.length === 0) {
+        listContainer.innerHTML = '<p style="font-size: 12px; color: var(--muted); text-align: center; padding: 10px;">Nu există template-uri salvate încă.</p>';
+        return;
+      }
+      
+      listContainer.innerHTML = '';
+      
+      templates.forEach((template, index) => {
+        const templateItem = document.createElement('div');
+        templateItem.className = 'template-item';
+        templateItem.innerHTML = `
+          <div class="template-info">
+            <div class="template-name">${template.name}</div>
+            <div class="template-details">${template.grade} • ${template.school}</div>
+            <div class="template-date">${new Date(template.timestamp).toLocaleDateString('ro-RO')}</div>
+          </div>
+          <div class="template-actions">
+            <button class="btn-mini" onclick="loadTemplateById('${template.id}')" title="Încarcă template">📂</button>
+            <button class="btn-mini danger" onclick="deleteTemplate('${template.id}')" title="Șterge template">🗑️</button>
+          </div>
+        `;
+        listContainer.appendChild(templateItem);
+      });
+    }
+
+    // Încarcă un template specific după ID
+    function loadTemplateById(templateId) {
+      try {
+        const templates = getSavedTemplates();
+        const template = templates.find(t => t.id === templateId);
+        
+        if (!template) {
+          showMessage('❌ Template-ul nu a fost găsit!', 'error');
+          return;
+        }
+        
+        // Încarcă toate datele
+        document.getElementById('school').value = template.school || '';
+        document.getElementById('year').value = template.year || '2025–2026';
+        document.getElementById('grade').value = template.grade || 'Clasa a III-a';
+        document.getElementById('theme').value = template.theme || 'playful';
+        document.getElementById('director').value = template.director || '';
+        document.getElementById('teacher').value = template.teacher || '';
+        
+        // Restaurează zilele cu toate datele
+        if (template.days && Array.isArray(template.days)) {
+          state.days = template.days.map(day => ({
+            name: day.name,
+            count: day.count || 0,
+            subjects: (day.subjects || []).map(subject => ({
+              text: subject.text || '',
+              icon: subject.icon || '',
+              image: subject.image || ''
+            }))
+          }));
+        }
+        
+        document.body.setAttribute('data-theme', template.theme || 'playful');
+        
+        buildDaysEditor();
+        generateSchedule();
+        
+        showMessage(`📂 Template "${template.name}" încărcat cu succes!`, 'success');
+        
+      } catch (error) {
+        showMessage('❌ Eroare la încărcarea template-ului: ' + error.message, 'error');
+        console.error('Load template error:', error);
+      }
+    }
+
+    // Variabile pentru popup-ul custom
+    let confirmCallback = null;
+
+    // Afișează popup-ul custom de confirmare
+    function showConfirmModal(title, message, callback) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalMessage').textContent = message;
+      document.getElementById('confirmModal').style.display = 'flex';
+      confirmCallback = callback;
+    }
+
+    // Închide popup-ul custom
+    function closeConfirmModal() {
+      document.getElementById('confirmModal').style.display = 'none';
+      confirmCallback = null;
+    }
+
+    // Execută acțiunea confirmată
+    function confirmAction() {
+      if (confirmCallback) {
+        confirmCallback();
+      }
+      closeConfirmModal();
+    }
+
+    // Șterge un template cu popup custom
+    function deleteTemplate(templateId) {
+      const templates = getSavedTemplates();
+      const template = templates.find(t => t.id === templateId);
+      
+      if (!template) {
+        showMessage('❌ Template-ul nu a fost găsit!', 'error');
+        return;
+      }
+      
+      showConfirmModal(
+        '🗑️ Șterge Template',
+        `Sigur vrei să ștergi template-ul "${template.name}"? Această acțiune nu poate fi anulată.`,
+        () => {
+          try {
+            const filteredTemplates = templates.filter(t => t.id !== templateId);
+            localStorage.setItem('orarTemplates', JSON.stringify(filteredTemplates));
+            updateTemplatesList();
+            showMessage('🗑️ Template șters cu succes!', 'success');
+          } catch (error) {
+            showMessage('❌ Eroare la ștergerea template-ului!', 'error');
+            console.error('Delete template error:', error);
+          }
+        }
+      );
+    }
+
+    // Încarcă datele de lucru curente (auto-salvate)
+    function loadCurrentWork() {
+      try {
+        const saved = localStorage.getItem('orarCurrentWork');
+        if (saved) {
+          const data = JSON.parse(saved);
+          
+          document.getElementById('school').value = data.school || '';
+          document.getElementById('year').value = data.year || '2025–2026';
+          document.getElementById('grade').value = data.grade || 'Clasa a III-a';
+          document.getElementById('theme').value = data.theme || 'playful';
+          document.getElementById('director').value = data.director || '';
+          document.getElementById('teacher').value = data.teacher || '';
+          document.getElementById('timeFormat').value = data.timeFormat || 'hours';
+          
+          // Restaurează zilele cu toate datele (text, emoji, imagini)
+          if (data.days && Array.isArray(data.days)) {
+            state.days = data.days.map(day => ({
+              name: day.name,
+              count: day.count || 0,
+              subjects: (day.subjects || []).map(subject => ({
+                text: subject.text || '',
+                icon: subject.icon || '',
+                image: subject.image || ''
+              }))
+            }));
+            
+            console.log('Lucrul curent restaurat din auto-save');
+          }
+          
+          document.body.setAttribute('data-theme', data.theme || 'playful');
+          return true; // A găsit date salvate
+        }
+        return false; // Nu a găsit date salvate
+      } catch (e) {
+        console.log('No current work found:', e);
+        return false;
+      }
+    }
+
+    // Golește toate datele
+    function clearAll() {
+      if (confirm('Sigur vrei să ștergi toate datele? Această acțiune nu poate fi anulată.')) {
+        state.days.forEach(d => { d.count = 0; d.subjects = []; });
+        buildDaysEditor();
+        document.getElementById('grid').innerHTML = '';
+        document.getElementById('excel-paste').value = '';
+        document.getElementById('word-paste').value = '';
+        showMessage('🧹 Toate datele au fost șterse!', 'success');
+      }
+    }
+
+    // Afișează mesaj
+    function showMessage(text, type = 'success') {
+      const container = document.getElementById('successMessage');
+      container.innerHTML = `<div class="success-message show">${text}</div>`;
+      setTimeout(() => { container.innerHTML = ''; }, 4000);
+    }
+
+    // Schimbă tema
+    document.getElementById('theme').addEventListener('change', function() {
+      document.body.style.opacity = '0.8';
+      setTimeout(() => {
+        document.body.setAttribute('data-theme', this.value);
+        document.body.style.opacity = '1';
+        const themeName = this.options[this.selectedIndex].text;
+        showMessage(`🎨 Tema schimbată la: ${themeName}`, 'success');
+      }, 150);
+    });
+
+
+    // Scurtături tastatură
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        switch(e.key) {
+          case 'Enter':
+            e.preventDefault();
+            generateSchedule();
+            break;
+          case 'p':
+            e.preventDefault();
+            window.print();
+            break;
+          case 's':
+            e.preventDefault();
+            if (e.shiftKey) {
+              saveTemplate();
+            } else {
+              exportToPNG();
+            }
+            break;
+        }
+      }
+    });
+
+    // Cache busting pentru CSS
+    function checkVersion() {
+      const currentVersion = '2.3';
+      const savedVersion = localStorage.getItem('orarVersion');
+      
+      if (savedVersion !== currentVersion) {
+        // Versiune nouă - doar refresh CSS, păstrează template-urile
+        localStorage.setItem('orarVersion', currentVersion);
+        
+        // Forțează refresh pentru CSS
+        const links = document.querySelectorAll('link[rel="stylesheet"]');
+        links.forEach(link => {
+          const href = link.href.split('?')[0];
+          link.href = href + '?v=' + currentVersion + '&t=' + Date.now();
+        });
+        
+        showMessage('🔄 Aplicația a fost actualizată la versiunea ' + currentVersion + '!', 'success');
+      }
+    }
+
+    // Auto-salvare pentru input-uri (fără template-uri)
+    function setupAutoSave() {
+      const inputs = ['school', 'year', 'grade', 'director', 'teacher'];
+      inputs.forEach(id => {
+        document.getElementById(id).addEventListener('input', autoSaveData);
+      });
+      document.getElementById('theme').addEventListener('change', autoSaveData);
+      document.getElementById('timeFormat').addEventListener('change', () => {
+        autoSaveData();
+        generateSchedule(); // Regenerează orarul când se schimbă formatul
+      });
+    }
+
+    // Inițializare
+    document.addEventListener('DOMContentLoaded', () => {
+      checkVersion();
+      
+      // Încearcă să restaureze lucrul curent sau încarcă orarul oficial
+      const hasCurrentWork = loadCurrentWork();
+      if (!hasCurrentWork) {
+        // Doar dacă nu există lucru salvat, încarcă orarul oficial
+        loadOfficialSchedule();
+      }
+      
+      // Construiește editorul de zile
+      buildDaysEditor();
+      
+      // Generează orarul pentru previzualizare
+      generateSchedule();
+      
+      // Inițializează lista de template-uri
+      updateTemplatesList();
+      
+      // Activează auto-salvarea pentru input-uri
+      setupAutoSave();
+      
+      // Mesaj de bun venit
+      setTimeout(() => {
+        showMessage('🎉 Generator de orar avansat încărcat! 16 designuri disponibile și sistem de template-uri avansat.', 'success');
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

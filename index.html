@@ -87,14 +87,6 @@
             Copiază orarul din Excel sau Word și lipește aici. Detectarea este automată!
           </p>
           
-          <!-- Info despre orarul pre-încărcat -->
-          <div class="predefined-subjects">
-            <h4>✅ Orarul oficial pentru Clasa a III-a este deja încărcat automat!</h4>
-            <p style="font-size: 12px; color: var(--muted); margin: 8px 0;">
-              Orarul din documentul .docx se încarcă automat la deschiderea paginii. 
-              Poți modifica materiile direct în câmpurile de mai jos sau importa din Excel/Word.
-            </p>
-          </div>
           
           <div class="import-options">
             <div>
@@ -199,7 +191,7 @@
     const subjectEmojiList = [
       // Matematică și științe exacte
       { keywords: ['matematică', 'mate'], emoji: '🔢', category: 'Matematică' },
-      { keywords: ['matematică distractivă', 'mate distractivă'], emoji: '🎲', category: 'Matematică' },
+      { keywords: ['matematică și științe în societatea cunoașterii', 'mate și științe'], emoji: '🧠', category: 'Matematică' },
       { keywords: ['geometrie'], emoji: '📐', category: 'Matematică' },
       { keywords: ['algebră'], emoji: '🧮', category: 'Matematică' },
       
@@ -290,7 +282,7 @@
         "Limba și literatura română",
         "Limba și literatura română", 
         "Joc și mișcare",
-        "Matematică distractivă",
+        "Matematică și științe în societatea cunoașterii",
         "Activități remediale matematică"
       ],
       "Vineri": [
@@ -312,7 +304,7 @@
       "Educație civică",
       "Religie",
       "Joc și mișcare",
-      "Matematică distractivă",
+      "Matematică și științe în societatea cunoașterii",
       "Muzică și mișcare",
       "Activități remediale LLR",
       "Activități remediale matematică"
@@ -663,10 +655,19 @@
         
         daySubjects.forEach(subject => {
           const icon = getSubjectIcon(subject);
+          let image = "";
+          
+          // Adaug imaginile pentru steaguri
+          if (subject.includes("Limba și literatura română") || subject.includes("română")) {
+            image = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Flag_of_Romania.svg/2560px-Flag_of_Romania.svg.png";
+          } else if (subject.includes("Limba engleză") || subject.includes("engleză")) {
+            image = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Flag_of_the_United_Kingdom_%283-5%29.svg/1200px-Flag_of_the_United_Kingdom_%283-5%29.svg.png";
+          }
+          
           day.subjects.push({
             text: subject,
             icon: icon,
-            image: ""
+            image: image
           });
         });
       });

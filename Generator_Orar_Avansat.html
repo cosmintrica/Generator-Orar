@@ -13,12 +13,22 @@
   <!-- html2canvas for PNG export -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <!-- jsPDF for PDF export -->
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
   <script>
     // Verifică dacă librăriile sunt încărcate
     window.addEventListener('load', function() {
       console.log('html2canvas loaded:', typeof html2canvas !== 'undefined');
       console.log('jsPDF loaded:', typeof jsPDF !== 'undefined');
+      console.log('window.jsPDF loaded:', typeof window.jsPDF !== 'undefined');
+      
+      // Încearcă să acceseze jsPDF prin diferite căi
+      if (typeof window.jsPDF !== 'undefined') {
+        console.log('jsPDF available via window.jsPDF');
+      } else if (typeof jsPDF !== 'undefined') {
+        console.log('jsPDF available via jsPDF');
+      } else {
+        console.error('jsPDF not loaded!');
+      }
     });
   </script>
 </head>
@@ -982,10 +992,23 @@
         }
         
         // Verifică dacă jsPDF este disponibil
-        if (typeof jsPDF === 'undefined' && typeof window.jsPDF === 'undefined') {
+        let PDF;
+        if (typeof window.jsPDF !== 'undefined') {
+          PDF = window.jsPDF;
+          console.log('Using window.jsPDF');
+        } else if (typeof jsPDF !== 'undefined') {
+          PDF = jsPDF;
+          console.log('Using jsPDF');
+        } else {
           // Încearcă să aștepte puțin pentru încărcare
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          if (typeof jsPDF === 'undefined' && typeof window.jsPDF === 'undefined') {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          if (typeof window.jsPDF !== 'undefined') {
+            PDF = window.jsPDF;
+            console.log('Using window.jsPDF after wait');
+          } else if (typeof jsPDF !== 'undefined') {
+            PDF = jsPDF;
+            console.log('Using jsPDF after wait');
+          } else {
             throw new Error('jsPDF nu este încărcat. Reîncarcă pagina și încearcă din nou.');
           }
         }
@@ -1010,16 +1033,6 @@
         
         // Creează PDF-ul în landscape
         const imgData = canvas.toDataURL('image/png', 0.9);
-        
-        // Încearcă diferite moduri de acces la jsPDF
-        let PDF;
-        if (typeof jsPDF !== 'undefined') {
-          PDF = jsPDF;
-        } else if (typeof window.jsPDF !== 'undefined') {
-          PDF = window.jsPDF;
-        } else {
-          throw new Error('jsPDF nu este disponibil în niciun format');
-        }
         
         const pdf = new PDF({
           orientation: 'landscape',
@@ -1053,6 +1066,14 @@
       } catch (error) {
         showMessage('❌ Eroare la generarea PDF: ' + error.message, 'error');
         console.error('PDF Export Error:', error);
+        
+        // Fallback - deschide printarea browser-ului
+        try {
+          showMessage('🔄 Încerc cu printarea browser-ului...', 'success');
+          window.print();
+        } catch (printError) {
+          showMessage('❌ Nu s-a putut genera PDF-ul. Încearcă să refreshezi pagina.', 'error');
+        }
       }
     }
 

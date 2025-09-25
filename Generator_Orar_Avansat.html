@@ -13,7 +13,14 @@
   <!-- html2canvas for PNG export -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <!-- jsPDF for PDF export -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script>
+    // Verifică dacă librăriile sunt încărcate
+    window.addEventListener('load', function() {
+      console.log('html2canvas loaded:', typeof html2canvas !== 'undefined');
+      console.log('jsPDF loaded:', typeof jsPDF !== 'undefined');
+    });
+  </script>
 </head>
 <body data-theme="playful">
   <div class="app">
@@ -129,6 +136,7 @@
         <button class="btn" onclick="generateSchedule()">🎯 Generează Orarul</button>
         <button class="btn secondary" onclick="window.print()">🖨️ Print / PDF</button>
         <button class="btn secondary" onclick="exportToPNG()">📸 Descarcă PNG</button>
+        <button class="btn secondary" onclick="exportToPDF()">📄 Descarcă PDF</button>
         <button class="btn outline" onclick="saveTemplate()">💾 Salvează Template</button>
         <button class="btn outline" onclick="clearAll()">🧹 Golește Tot</button>
       </div>
@@ -155,7 +163,7 @@
 
     <!-- Previzualizare Centrată -->
     <div class="preview-section">
-      <section id="sheet" class="sheet" aria-label="Previzualizare orar A4">
+      <section id="sheet" class="sheet preview-mode" aria-label="Previzualizare orar A4">
         <div class="ribbons">
           <span class="ribbon r1"></span>
           <span class="ribbon r2"></span>
@@ -784,56 +792,117 @@
       try {
         const sheetElement = document.getElementById('sheet');
         
+        if (!sheetElement) {
+          throw new Error('Elementul orarului nu a fost găsit');
+        }
+        
+        // Verifică dacă html2canvas este disponibil
+        if (typeof html2canvas === 'undefined') {
+          throw new Error('html2canvas nu este încărcat. Reîncarcă pagina și încearcă din nou.');
+        }
+        
+        // Debug - verifică dimensiunile elementului
+        console.log('Sheet element:', sheetElement);
+        console.log('Sheet dimensions:', {
+          width: sheetElement.offsetWidth,
+          height: sheetElement.offsetHeight,
+          scrollWidth: sheetElement.scrollWidth,
+          scrollHeight: sheetElement.scrollHeight
+        });
+        
+        // Elimină temporar clasa preview-mode pentru html2canvas
+        const originalClasses = sheetElement.className;
+        sheetElement.className = 'sheet';
+        
+        // Așteaptă ca elementul să fie complet renderat
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Calculează dimensiunile corecte pentru aspect ratio
+        const elementWidth = sheetElement.offsetWidth;
+        const elementHeight = sheetElement.offsetHeight;
+        const aspectRatio = elementWidth / elementHeight;
+        
+        console.log('Element aspect ratio:', aspectRatio);
+        console.log('Element dimensions:', elementWidth, 'x', elementHeight);
+        
         // Aplică stiluri temporare pentru PNG export (texte mari)
         const tempStyle = document.createElement('style');
         tempStyle.id = 'png-export-style';
         tempStyle.textContent = `
-          #sheet .main-title { font-size: 34pt !important; }
-          #sheet .year-subtitle { font-size: 18pt !important; }
-          #sheet .grid-cell { font-size: 18pt !important; min-height: 16mm !important; }
-          #sheet .grid-cell.header { font-size: 20pt !important; }
+          #sheet .main-title { font-size: 28pt !important; }
+          #sheet .year-subtitle { font-size: 16pt !important; }
+          #sheet .grid-cell { font-size: 16pt !important; min-height: 12mm !important; }
+          #sheet .grid-cell.header { font-size: 18pt !important; }
           #sheet .grid-cell.period { font-size: 12pt !important; }
-          #sheet .subject-text { font-size: 16pt !important; }
-          #sheet .subject-icon { font-size: 32px !important; }
-          #sheet .subject-image { width: 44px !important; height: 44px !important; }
+          #sheet .subject-text { font-size: 14pt !important; }
+          #sheet .subject-icon { font-size: 28px !important; }
+          #sheet .subject-image { width: 48px !important; height: 48px !important; }
           #sheet .sig-name { font-size: 14pt !important; }
           #sheet .sig-role { font-size: 12pt !important; }
         `;
         document.head.appendChild(tempStyle);
         
         // Așteaptă aplicarea stilurilor
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise(resolve => setTimeout(resolve, 500));
         
+        // Calculează scale-ul optim pentru calitate
+        const devicePixelRatio = window.devicePixelRatio || 1;
+        const optimalScale = Math.min(4, devicePixelRatio * 2);
+        
+        console.log('Device pixel ratio:', devicePixelRatio);
+        console.log('Optimal scale:', optimalScale);
+        
+        // Încearcă cu setări optimizate pentru aspect ratio corect
         const canvas = await html2canvas(sheetElement, {
-          scale: 3,
-          backgroundColor: null,
+          scale: optimalScale,
+          backgroundColor: '#ffffff',
           useCORS: true,
           allowTaint: true,
-          width: sheetElement.offsetWidth,
-          height: sheetElement.offsetHeight,
-          logging: false,
+          logging: true,
           removeContainer: false,
-          foreignObjectRendering: true,
-          imageTimeout: 20000,
-          onclone: function(clonedDoc) {
-            // Asigură-te că toate stilurile sunt aplicate în clonă
-            const clonedStyle = clonedDoc.getElementById('png-export-style');
-            if (clonedStyle) {
-              clonedStyle.innerHTML = tempStyle.textContent;
-            }
-          }
+          foreignObjectRendering: false,
+          imageTimeout: 10000,
+          scrollX: 0,
+          scrollY: 0,
+          width: elementWidth,
+          height: elementHeight
         });
         
-        // Elimină stilurile temporare
-        document.head.removeChild(tempStyle);
+        console.log('Canvas generated:', canvas);
+        console.log('Canvas dimensions:', {
+          width: canvas.width,
+          height: canvas.height
+        });
+        
+        // Verifică aspect ratio-ul canvas-ului
+        const canvasAspectRatio = canvas.width / canvas.height;
+        console.log('Canvas aspect ratio:', canvasAspectRatio);
+        console.log('Element aspect ratio:', aspectRatio);
         
         // Verifică dacă canvas-ul a fost generat corect
         if (!canvas || canvas.width === 0 || canvas.height === 0) {
-          throw new Error('Canvas-ul nu a fost generat corect');
+          throw new Error('Canvas-ul nu a fost generat corect. Dimensiuni: ' + canvas.width + 'x' + canvas.height);
         }
         
+        // Verifică dacă aspect ratio-ul este corect (nu turtit)
+        const aspectRatioDiff = Math.abs(canvasAspectRatio - aspectRatio);
+        if (aspectRatioDiff > 0.1) {
+          console.warn('Canvas-ul pare turtit! Aspect ratio diferit:', aspectRatioDiff);
+        }
+        
+        // Elimină stilurile temporare
+        if (document.getElementById('png-export-style')) {
+          document.head.removeChild(tempStyle);
+        }
+        
+        // Restaurează clasa originală
+        sheetElement.className = originalClasses;
+        
         // Creează și descarcă imaginea
-        const dataURL = canvas.toDataURL('image/png', 1.0);
+        const dataURL = canvas.toDataURL('image/png', 0.9);
+        
+        console.log('DataURL length:', dataURL.length);
+        console.log('DataURL preview:', dataURL.substring(0, 100));
         
         if (!dataURL || dataURL === 'data:,') {
           throw new Error('Imaginea nu a fost generată corect');
@@ -850,28 +919,137 @@
         link.click();
         document.body.removeChild(link);
         
-        showMessage('📸 Imaginea PNG a fost descărcată cu gradient și texte mari!', 'success');
+        showMessage('📸 Imaginea PNG a fost descărcată cu succes!', 'success');
       } catch (error) {
-        showMessage('❌ Eroare la generarea PNG: ' + error.message, 'error');
-        console.error('PNG export error:', error);
+        // Elimină stilurile temporare în caz de eroare
+        const tempStyle = document.getElementById('png-export-style');
+        if (tempStyle) {
+          document.head.removeChild(tempStyle);
+        }
         
-        // Fallback - încearcă cu setări mai simple
+        // Restaurează clasa originală în caz de eroare
+        if (typeof originalClasses !== 'undefined') {
+          sheetElement.className = originalClasses;
+        }
+        
+        showMessage('❌ Eroare la generarea PNG: ' + error.message, 'error');
+        console.error('PNG Export Error:', error);
+        
+        // Fallback - încearcă cu setări foarte simple
         try {
           showMessage('🔄 Încerc cu setări alternative...', 'success');
+          
+          // Încearcă să capturezi doar conținutul vizibil
           const canvas = await html2canvas(document.getElementById('sheet'), {
             scale: 1,
-            backgroundColor: 'white'
+            backgroundColor: 'white',
+            useCORS: false,
+            allowTaint: false,
+            logging: true
           });
           
-          const link = document.createElement('a');
-          link.download = `Orar_Fallback_${new Date().getTime()}.png`;
-          link.href = canvas.toDataURL('image/png');
-          link.click();
+          console.log('Fallback canvas:', canvas);
           
-          showMessage('📸 Imaginea PNG alternativă a fost descărcată!', 'success');
+          if (canvas && canvas.width > 0 && canvas.height > 0) {
+            const link = document.createElement('a');
+            link.download = `Orar_Fallback_${new Date().getTime()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            showMessage('📸 Imaginea PNG alternativă a fost descărcată!', 'success');
+          } else {
+            throw new Error('Canvas-ul fallback nu a fost generat corect');
+          }
         } catch (fallbackError) {
-          showMessage('❌ Nu s-a putut genera imaginea PNG. Încearcă să refreshezi pagina.', 'error');
+          console.error('Fallback error:', fallbackError);
+          showMessage('❌ Nu s-a putut genera imaginea PNG. Verifică consola pentru detalii.', 'error');
         }
+      }
+    }
+
+    // Export PDF cu jsPDF
+    async function exportToPDF() {
+      showMessage('📄 Generez PDF-ul...', 'success');
+      
+      try {
+        const sheetElement = document.getElementById('sheet');
+        
+        if (!sheetElement) {
+          throw new Error('Elementul orarului nu a fost găsit');
+        }
+        
+        // Verifică dacă jsPDF este disponibil
+        if (typeof jsPDF === 'undefined' && typeof window.jsPDF === 'undefined') {
+          // Încearcă să aștepte puțin pentru încărcare
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          if (typeof jsPDF === 'undefined' && typeof window.jsPDF === 'undefined') {
+            throw new Error('jsPDF nu este încărcat. Reîncarcă pagina și încearcă din nou.');
+          }
+        }
+        
+        // Generează canvas-ul pentru PDF
+        const canvas = await html2canvas(sheetElement, {
+          scale: 2,
+          backgroundColor: '#ffffff',
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          removeContainer: false,
+          foreignObjectRendering: false,
+          imageTimeout: 10000,
+          scrollX: 0,
+          scrollY: 0
+        });
+        
+        if (!canvas || canvas.width === 0 || canvas.height === 0) {
+          throw new Error('Canvas-ul nu a fost generat corect');
+        }
+        
+        // Creează PDF-ul în landscape
+        const imgData = canvas.toDataURL('image/png', 0.9);
+        
+        // Încearcă diferite moduri de acces la jsPDF
+        let PDF;
+        if (typeof jsPDF !== 'undefined') {
+          PDF = jsPDF;
+        } else if (typeof window.jsPDF !== 'undefined') {
+          PDF = window.jsPDF;
+        } else {
+          throw new Error('jsPDF nu este disponibil în niciun format');
+        }
+        
+        const pdf = new PDF({
+          orientation: 'landscape',
+          unit: 'mm',
+          format: 'a4'
+        });
+        
+        // Calculează dimensiunile pentru A4 landscape
+        const pdfWidth = 297; // A4 landscape width
+        const pdfHeight = 210; // A4 landscape height
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+        
+        // Calculează scaling pentru a se potrivi în A4
+        const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+        const finalWidth = imgWidth * ratio;
+        const finalHeight = imgHeight * ratio;
+        
+        // Centrează imaginea în PDF
+        const x = (pdfWidth - finalWidth) / 2;
+        const y = (pdfHeight - finalHeight) / 2;
+        
+        pdf.addImage(imgData, 'PNG', x, y, finalWidth, finalHeight);
+        
+        // Descarcă PDF-ul
+        const grade = document.getElementById('grade').value.trim().replace(/\s+/g, '_');
+        const theme = document.getElementById('theme').options[document.getElementById('theme').selectedIndex].text.replace(/[🎨🌈🦋🌿🌊🚀🍭🐻📚👸🤖✨]/g, '').trim();
+        pdf.save(`Orar_${grade}_${theme}_${new Date().getTime()}.pdf`);
+        
+        showMessage('📄 PDF-ul a fost descărcat cu succes!', 'success');
+      } catch (error) {
+        showMessage('❌ Eroare la generarea PDF: ' + error.message, 'error');
+        console.error('PDF Export Error:', error);
       }
     }
 

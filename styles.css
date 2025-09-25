@@ -425,6 +425,132 @@ body {
 }
 
 /* Medium-large screens (1400-1599px) */
+/* Preview Mode - să arate identic cu printarea */
+.preview-mode .sheet {
+  box-shadow: none !important;
+  border: none !important;
+  border-top: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  -webkit-print-color-adjust: exact !important;
+  color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.preview-mode .sheet-inner {
+  padding: 3mm 8mm 6mm 8mm !important;
+  height: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+  border: none !important;
+  border-top: none !important;
+}
+
+.preview-mode .header {
+  margin-bottom: 3mm !important;
+  border-top: none !important;
+  padding-top: 0 !important;
+}
+
+.preview-mode .title-section {
+  margin: 0 0 1mm 0 !important;
+}
+
+.preview-mode .main-title {
+  margin: 0 !important;
+  font-size: 24pt !important;
+  background: linear-gradient(135deg, #fd79a8, #00cec9) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  -webkit-print-color-adjust: exact !important;
+  color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.preview-mode .year-subtitle {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 14pt !important;
+}
+
+.preview-mode .schedule-grid {
+  flex: 1 !important;
+  margin: 0 !important;
+  -webkit-print-color-adjust: exact !important;
+  color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.preview-mode .grid-cell {
+  padding: 3px 4px !important;
+  min-height: 8mm !important;
+  font-size: 12pt !important;
+  -webkit-print-color-adjust: exact !important;
+  color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.preview-mode .grid-cell.header {
+  font-size: 14pt !important;
+  padding: 2px 3px !important;
+  -webkit-print-color-adjust: exact !important;
+  color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.preview-mode .grid-cell.period {
+  font-size: 10pt !important;
+  padding: 2px 3px !important;
+  line-height: 1.1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  -webkit-print-color-adjust: exact !important;
+  color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.preview-mode .signatures {
+  margin-top: 3mm !important;
+  flex-shrink: 0 !important;
+}
+
+.preview-mode .sig-name {
+  font-size: 12pt !important;
+}
+
+.preview-mode .sig-role {
+  font-size: 11pt !important;
+}
+
+.preview-mode .subject-text {
+  font-size: 10pt !important;
+  -webkit-print-color-adjust: exact !important;
+  color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.preview-mode .subject-icon {
+  font-size: 20px !important;
+  -webkit-print-color-adjust: exact !important;
+  color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.preview-mode .subject-image {
+  width: 32px !important;
+  height: 32px !important;
+  -webkit-print-color-adjust: exact !important;
+  color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
 @media (max-width: 1599px) and (min-width: 1400px) {
   .app {
     gap: 20px;

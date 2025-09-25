@@ -825,20 +825,23 @@
         console.log('Element aspect ratio:', aspectRatio);
         console.log('Element dimensions:', elementWidth, 'x', elementHeight);
         
-        // Aplică stiluri temporare pentru PNG export (texte mari)
+        // Aplică stiluri temporare pentru PNG export (texte mai mici să încapă)
         const tempStyle = document.createElement('style');
         tempStyle.id = 'png-export-style';
         tempStyle.textContent = `
-          #sheet .main-title { font-size: 28pt !important; }
-          #sheet .year-subtitle { font-size: 16pt !important; }
-          #sheet .grid-cell { font-size: 16pt !important; min-height: 12mm !important; }
-          #sheet .grid-cell.header { font-size: 18pt !important; }
-          #sheet .grid-cell.period { font-size: 12pt !important; }
-          #sheet .subject-text { font-size: 14pt !important; }
-          #sheet .subject-icon { font-size: 28px !important; }
-          #sheet .subject-image { width: 48px !important; height: 48px !important; }
-          #sheet .sig-name { font-size: 14pt !important; }
-          #sheet .sig-role { font-size: 12pt !important; }
+          #sheet { background: #ffffff !important; }
+          #sheet .header { background: none !important; }
+          #sheet .title-section { background: none !important; }
+          #sheet .main-title { font-size: 24pt !important; background: none !important; color: #fd79a8 !important; -webkit-text-fill-color: #fd79a8 !important; -webkit-background-clip: unset !important; }
+          #sheet .year-subtitle { font-size: 14pt !important; }
+          #sheet .grid-cell { font-size: 12pt !important; min-height: 10mm !important; line-height: 1.2 !important; }
+          #sheet .grid-cell.header { font-size: 14pt !important; }
+          #sheet .grid-cell.period { font-size: 10pt !important; white-space: nowrap !important; }
+          #sheet .subject-text { font-size: 11pt !important; line-height: 1.1 !important; }
+          #sheet .subject-icon { font-size: 22px !important; }
+          #sheet .subject-image { width: 36px !important; height: 36px !important; }
+          #sheet .sig-name { font-size: 12pt !important; }
+          #sheet .sig-role { font-size: 10pt !important; }
         `;
         document.head.appendChild(tempStyle);
         

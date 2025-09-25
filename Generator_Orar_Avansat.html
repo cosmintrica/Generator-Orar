@@ -1067,12 +1067,25 @@
         showMessage('❌ Eroare la generarea PDF: ' + error.message, 'error');
         console.error('PDF Export Error:', error);
         
-        // Fallback - deschide printarea browser-ului
+        // Fallback - încearcă să încarce jsPDF din nou
         try {
-          showMessage('🔄 Încerc cu printarea browser-ului...', 'success');
-          window.print();
+          showMessage('🔄 Încerc să încarc jsPDF din nou...', 'success');
+          
+          // Încearcă să încarce jsPDF din nou
+          const script = document.createElement('script');
+          script.src = 'https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js';
+          script.onload = function() {
+            setTimeout(() => {
+              if (typeof window.jsPDF !== 'undefined') {
+                showMessage('📄 PDF-ul este gata! Încearcă din nou.', 'success');
+              } else {
+                showMessage('❌ jsPDF nu s-a încărcat. Reîncarcă pagina.', 'error');
+              }
+            }, 1000);
+          };
+          document.head.appendChild(script);
         } catch (printError) {
-          showMessage('❌ Nu s-a putut genera PDF-ul. Încearcă să refreshezi pagina.', 'error');
+          showMessage('❌ Nu s-a putut genera PDF-ul. Reîncarcă pagina și încearcă din nou.', 'error');
         }
       }
     }

@@ -452,13 +452,13 @@ body {
 }
 
 .preview-mode .header {
-  margin-bottom: 3mm !important;
+  margin-bottom: 1mm !important;
   border-top: none !important;
   padding-top: 0 !important;
 }
 
 .preview-mode .title-section {
-  margin: 0 0 1mm 0 !important;
+  margin: 0 0 0.5mm 0 !important;
 }
 
 .preview-mode .main-title {
@@ -505,9 +505,9 @@ body {
 }
 
 .preview-mode .grid-cell.period {
-  font-size: 10pt !important;
-  padding: 2px 3px !important;
-  line-height: 1.1 !important;
+  font-size: 9pt !important;
+  padding: 1px 2px !important;
+  line-height: 1.0 !important;
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
@@ -1590,13 +1590,13 @@ body[data-theme="space"] textarea {
   
   /* Elimin doar linia de sus, păstrez header-ul normal */
   .header {
-    margin-bottom: 3mm !important;
+    margin-bottom: 1mm !important;
     border-top: none !important;
     padding-top: 0 !important;
   }
   
   .title-section {
-    margin: 0 0 1mm 0 !important;
+    margin: 0 0 0.5mm 0 !important;
   }
   
   .main-title {
@@ -1640,9 +1640,12 @@ body[data-theme="space"] textarea {
   }
   
   .grid-cell.period {
-    font-size: 10pt !important;
-    padding: 2px 3px !important;
-    line-height: 1.1 !important;
+    font-size: 9pt !important;
+    padding: 1px 2px !important;
+    line-height: 1.0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
     -webkit-print-color-adjust: exact !important;
     color-adjust: exact !important;
     print-color-adjust: exact !important;

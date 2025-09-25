@@ -1601,7 +1601,7 @@ body[data-theme="space"] textarea {
   
   .main-title {
     margin: 0 !important;
-    font-size: 26pt !important;
+    font-size: 20pt !important;
     -webkit-print-color-adjust: exact !important;
     color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -1610,7 +1610,7 @@ body[data-theme="space"] textarea {
   .year-subtitle {
     margin: 0 !important;
     padding: 0 !important;
-    font-size: 14pt !important;
+    font-size: 12pt !important;
   }
   
   /* Optimizez grid-ul pentru printare */
@@ -1623,17 +1623,17 @@ body[data-theme="space"] textarea {
   }
   
   .grid-cell {
-    padding: 4px 6px !important;
-    min-height: 13mm !important;
-    font-size: 16pt !important;
+    padding: 3px 4px !important;
+    min-height: 8mm !important;
+    font-size: 12pt !important;
     -webkit-print-color-adjust: exact !important;
     color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
   
   .grid-cell.header {
-    font-size: 18pt !important;
-    padding: 3px 4px !important;
+    font-size: 14pt !important;
+    padding: 2px 3px !important;
     -webkit-print-color-adjust: exact !important;
     color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -1667,17 +1667,17 @@ body[data-theme="space"] textarea {
   
   /* Măresc imaginile pentru printare să fie vizibile */
   .subject-image {
-    width: 40px !important;
-    height: 40px !important;
+    width: 24px !important;
+    height: 24px !important;
   }
   
   .subject-icon {
-    font-size: 28px !important;
+    font-size: 20px !important;
   }
   
   .subject-text {
-    font-size: 14pt !important;
-    line-height: 1.2 !important;
+    font-size: 10pt !important;
+    line-height: 1.1 !important;
   }
 }
 
